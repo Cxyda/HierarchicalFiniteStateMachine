@@ -24,7 +24,7 @@ public class DemoStateMachine : MonoBehaviour
         state.OnExit(StateExit);
 
         triggerState.OnEnter(() => Debug.Log("TriggerState Enter"));
-        triggerState.TransitionTo(finalState).When(_stateMachineEvent);
+        triggerState.TransitionTo(finalState).On(_stateMachineEvent);
         
         finalState.OnEnter(() => Debug.Log("Final Reached"));
     }

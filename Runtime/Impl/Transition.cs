@@ -41,7 +41,7 @@ namespace Packages.HFSM.Runtime.Impl
             AlternativeTarget = target;
         }
 
-        public ITransition When(IStateMachineEvent @event)
+        public ITransition On(IStateMachineEvent @event)
         {
             ValidateTransition();
 
