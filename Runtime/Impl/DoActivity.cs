@@ -1,7 +1,7 @@
 using System;
-using HFSM.Interfaces;
+using Packages.HFSM.Runtime.Interfaces;
 
-namespace HFSM.Impl
+namespace Packages.HFSM.Runtime.Impl
 {
     public class DoActivity : IDoActivity
     {

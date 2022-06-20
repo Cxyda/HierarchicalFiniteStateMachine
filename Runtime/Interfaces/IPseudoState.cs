@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace HFSM.Interfaces
+namespace Packages.HFSM.Runtime.Interfaces
 {
     public interface IPseudoStateInternal : IPseudoState
     {

@@ -1,4 +1,4 @@
-namespace HFSM.Interfaces
+namespace Packages.HFSM.Runtime.Interfaces
 {
     public interface IFinalInternal : IFinal, IPseudoStateInternal, IEnterInternal
     {

@@ -1,6 +1,6 @@
-using System;
+using Packages.HFSM.Runtime.Impl;
 
-namespace HFSM.Interfaces
+namespace Packages.HFSM.Runtime.Interfaces
 {
     public interface IDoInternal : IDo
     {

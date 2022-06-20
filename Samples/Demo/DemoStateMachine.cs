@@ -1,5 +1,5 @@
-using HFSM.Impl;
-using HFSM.Interfaces;
+using Packages.HFSM.Runtime.Impl;
+using Packages.HFSM.Runtime.Interfaces;
 using UnityEngine;
 
 public class DemoStateMachine : MonoBehaviour

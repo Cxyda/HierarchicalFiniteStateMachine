@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using HFSM.Interfaces;
+using Packages.HFSM.Runtime.Interfaces;
 
-namespace HFSM.Impl.States
+namespace Packages.HFSM.Runtime.Impl.States
 {
     public class State : PseudoState, IStateInternal
     {

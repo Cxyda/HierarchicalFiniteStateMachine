@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using HFSM.Interfaces;
+using Packages.HFSM.Runtime.Interfaces;
 using UnityEngine;
 
-namespace HFSM.Impl
+namespace Packages.HFSM.Runtime.Impl
 {
     public class StateMachine : IStateMachine
     {

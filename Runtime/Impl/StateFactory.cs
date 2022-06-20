@@ -1,7 +1,7 @@
-using HFSM.Impl.States;
-using HFSM.Interfaces;
+using Packages.HFSM.Runtime.Impl.States;
+using Packages.HFSM.Runtime.Interfaces;
 
-namespace HFSM.Impl
+namespace Packages.HFSM.Runtime.Impl
 {
     internal static class StateFactory
     {

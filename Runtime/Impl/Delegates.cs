@@ -1,6 +1,6 @@
-using System;
+using Packages.HFSM.Runtime.Interfaces;
 
-namespace HFSM.Interfaces
+namespace Packages.HFSM.Runtime.Impl
 {
     public delegate void EnterDelegate();
     public delegate void DoActivityDelegate(IDoActivity doActivity);

@@ -1,6 +1,6 @@
 using System;
 
-namespace HFSM.Interfaces
+namespace Packages.HFSM.Runtime.Interfaces
 {
     public interface IStateInternal : IState, IPseudoStateInternal, IEnterInternal, IDoInternal, IExitInternal
     {

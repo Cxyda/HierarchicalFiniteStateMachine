@@ -1,8 +1,8 @@
 using System.IO;
 using System.Runtime.CompilerServices;
-using HFSM.Interfaces;
+using Packages.HFSM.Runtime.Interfaces;
 
-namespace HFSM.Impl
+namespace Packages.HFSM.Runtime.Impl
 {
     public static class StateMachineFactory
     {

@@ -1,4 +1,6 @@
-namespace HFSM.Interfaces
+using Packages.HFSM.Runtime.Impl;
+
+namespace Packages.HFSM.Runtime.Interfaces
 {
     public interface IExitInternal : IExit
     {
