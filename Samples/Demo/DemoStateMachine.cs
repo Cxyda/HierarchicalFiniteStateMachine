@@ -13,23 +13,40 @@ public class DemoStateMachine : MonoBehaviour
     {
         _sm = StateMachineFactory.Create("Test");
 
-        IInitial initial = _sm.CreateInitial();
         IState state = _sm.CreateState("FooState");
         IState triggerState = _sm.CreateState("TriggerState");
         IFinal finalState = _sm.CreateFinal();
 
-        initial.OnExit(InitialExit);
-        initial.TransitionTo(state);
-        
         state.OnEnter(StateEnter);
         state.OnDo(DoSomething);
+        state.Nest(SetupNestedState);
         state.TransitionTo(triggerState).If(IsTrue);
         state.OnExit(StateExit);
 
-        triggerState.OnEnter(() => Debug.Log("Foooo"));
+        triggerState.OnEnter(() => Debug.Log("TriggerState Enter"));
         triggerState.TransitionTo(finalState).When(_stateMachineEvent);
         
         finalState.OnEnter(() => Debug.Log("Final Reached"));
+    }
+
+    private void SetupNestedState(IStateMachineTemplate template)
+    {
+        var nestedState = template.CreateState("NestedState");
+        
+        nestedState.OnEnter(NestedEntry);
+        nestedState.OnDo(NestedDo);
+    }
+
+    private void NestedDo(IDoActivity doActivity)
+    {
+        Debug.Log("Nested Do");
+        doActivity.Complete();
+        Debug.Log("Nested Do complete");
+    }
+
+    private void NestedEntry()
+    {
+        Debug.Log("NesterEntry");
     }
 
     private void Update()
@@ -49,10 +66,6 @@ public class DemoStateMachine : MonoBehaviour
         _doActivity = doActivity;
     }
 
-    private void InitialExit()
-    {
-        Debug.Log("Initial Exit");
-    }
     private void StateEnter()
     {
         Debug.Log("State Enter");

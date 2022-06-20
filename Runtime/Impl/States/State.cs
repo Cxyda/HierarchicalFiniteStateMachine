@@ -8,10 +8,16 @@ namespace Packages.HFSM.Runtime.Impl.States
     {
         public event Action OnStateCompleteEvent;
 
-        internal State(string name, int id) : base( new HashSet<EnterDelegate>(3),  new HashSet<ExitDelegate>(3), new HashSet<ITransitionInternal>(3))
+        public IPseudoStateInternal CurrentState { get; private set; }
+
+        private StateMachineTemplate _nestedState;
+
+        internal State(string name, int id) : base(new HashSet<EnterDelegate>(3), new HashSet<ExitDelegate>(3),
+            new HashSet<ITransitionInternal>(3))
         {
             Id = id;
             Name = name;
+            CurrentState = null;
         }
 
         public void OnEnter(EnterDelegate enterDelegate)
@@ -24,10 +30,27 @@ namespace Packages.HFSM.Runtime.Impl.States
             onExitDelegates.Add(exitDelegate);
         }
 
+        public void Nest(StateMachineSetupDelegate stateMachineSetup)
+        {
+            if (_nestedState != null)
+            {
+                throw new Exception($"State {Name} already has a nested state.");
+            }
+            _nestedState = new StateMachineTemplate(Name);
+            stateMachineSetup(_nestedState);
+            CurrentState = (IPseudoStateInternal)_nestedState.Initial;
+        }
+
         public bool IsDone()
         {
             return onDoActivityDelegate == null || isDone;
         }
+
+        public bool IsCompositeState()
+        {
+            return _nestedState != null;
+        }
+
 
         public void Abort()
         {

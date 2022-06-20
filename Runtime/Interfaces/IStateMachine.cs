@@ -1,14 +1,10 @@
 namespace Packages.HFSM.Runtime.Interfaces
 {
-    public interface IStateMachine
+    public interface IStateMachine : IStateMachineTemplate
     {
         void Start();
         void Stop();
         
         void Trigger(IStateMachineEvent @event);
-
-        IInitial CreateInitial(string stateName = "");
-        IState CreateState(string stateName = "");
-        IFinal CreateFinal(string stateName = "");
     }
 }

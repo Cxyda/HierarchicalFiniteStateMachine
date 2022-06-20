@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Packages.HFSM.Runtime.Interfaces;
 using UnityEngine;
 
@@ -9,17 +8,14 @@ namespace Packages.HFSM.Runtime.Impl
     {
         private bool _isRunning;
 
-        private IInitialInternal _initial;
-        private IFinalInternal _final;
-        private readonly HashSet<IPseudoStateInternal> _states;
-
         private IPseudoStateInternal _currentState;
         private readonly string _name;
+        private readonly IStateMachineTemplateInternal _template;
 
-        internal StateMachine(string stateChartName)
+        internal StateMachine(string stateMachineName)
         {
-            _name = stateChartName;
-            _states = new HashSet<IPseudoStateInternal>(3);
+            _name = stateMachineName;
+            _template = new StateMachineTemplate(stateMachineName);
         }
 
         public void Start()
@@ -30,7 +26,7 @@ namespace Packages.HFSM.Runtime.Impl
             }
 
             _isRunning = true;
-            _currentState = _initial;
+            _currentState = (IPseudoStateInternal)_template.Initial;
             Execute(_currentState);
         }
 
@@ -56,6 +52,10 @@ namespace Packages.HFSM.Runtime.Impl
             IStateInternal subState = pseudoState as IStateInternal;
             if (subState != null)
             {
+                if (subState.IsCompositeState())
+                {
+                    Execute(subState.CurrentState);
+                }
                 subState.OnStateCompleteEvent += ContinueExecution;
             }
 
@@ -125,34 +125,14 @@ namespace Packages.HFSM.Runtime.Impl
             }
         }
 
-        public IInitial CreateInitial(string stateName = "Initial")
-        {
-            if (_initial != null)
-            {
-                throw new Exception("StateMachine already has an initial state");
-            }
-
-            _initial = StateFactory.CreateInitial($"{_name}_{stateName}");
-            return _initial;
-        }
-
         public IState CreateState(string stateName = "State")
         {
-            var newState = StateFactory.CreateState($"{_name}_{stateName}");
-            _states.Add(newState);
-
-            return newState;
+            return _template.CreateState(stateName);
         }
 
         public IFinal CreateFinal(string stateName = "Exit")
         {
-            if (_final != null)
-            {
-                throw new Exception("StateMachine already has a final state");
-            }
-            _final = StateFactory.CreateFinal($"{_name}_{stateName}");
-
-            return _final;
+            return _template.CreateFinal(stateName);
         }
     }
 }
