@@ -1,0 +1,24 @@
+{
+	"name": "de.oma-tools.hfsm",
+	"displayName": "OMA-Tools Hierarchical Finite StateMachine",
+	"description": "A Hierarchical Finite State Machine (HFSM) implementation",
+	"version": "0.1.0",
+	"unity": "2021.3",
+	"license": "GPL-3.0",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Cxyda/HierarchicalFiniteStateMachine.git"
+	},
+	"src": "Assets/Plugins/O.M.A.Games/Core",
+	"author": {
+		"name" : "Daniel Steegmüller (Cxyda)",
+		"email" : "cxyda@tuta.io",
+		"url" : "https://github.com/Cxyda"
+	},
+	"samples": {
+	   "displayName": "HFSM Demo",
+	   "description": "A very simple demo of how to use this package",
+	   "path": "Samples~/Demo"
+	}
+
+}
