@@ -12,7 +12,11 @@ namespace Packages.HFSM.Runtime.Impl
         private readonly string _name;
         private readonly IStateMachineTemplateInternal _template;
 
-        internal StateMachine(string stateMachineName)
+        private StateMachine()
+        {
+        }
+
+        public StateMachine(string stateMachineName)
         {
             _name = stateMachineName;
             _template = new StateMachineTemplate(stateMachineName);
