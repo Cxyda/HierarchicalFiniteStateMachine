@@ -1,11 +1,10 @@
-using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Packages.HFSM.Runtime.Interfaces;
 
 namespace Packages.HFSM.Runtime.Impl
 {
-    public static class StateMachineFactory
+    public class StateMachineFactory
     {
         public static IStateMachine Create([CallerFilePath] string name = "")
         {
