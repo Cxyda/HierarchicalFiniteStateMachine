@@ -7,14 +7,17 @@ namespace Packages.HFSM.Runtime.Impl
     internal class StateMachineTemplate : IStateMachineTemplateInternal
     {
         public IInitial Initial => _initial;
+        public IFinal Final => _final;
 
         private readonly string _templateName;
         private readonly IInitialInternal _initial;
         private IFinalInternal _final;
         private readonly HashSet<IPseudoStateInternal> _states;
+        private readonly IStateInternal _parentState;
 
-        internal StateMachineTemplate(string templateName)
+        internal StateMachineTemplate(IStateInternal parentState, string templateName)
         {
+            _parentState = parentState;
             _templateName = templateName;
             _states = new HashSet<IPseudoStateInternal>(3);
             _initial = StateFactory.CreateInitial($"{_templateName}_Initial");
@@ -39,8 +42,13 @@ namespace Packages.HFSM.Runtime.Impl
                 throw new Exception("StateMachine already has a final state");
             }
             _final = StateFactory.CreateFinal($"{_templateName}_{stateName}");
-
+            _final.OnEnter(MarkParentStateAsDone);
             return _final;
+            
+            void MarkParentStateAsDone()
+            {
+                _parentState.MarkStateAsDone();
+            }
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Packages.HFSM.Runtime.Impl
         public StateMachine(string stateMachineName)
         {
             _name = stateMachineName;
-            _template = new StateMachineTemplate(stateMachineName);
+            _template = new StateMachineTemplate(null, stateMachineName);
         }
 
         public void Start()
@@ -56,20 +56,21 @@ namespace Packages.HFSM.Runtime.Impl
             IStateInternal subState = pseudoState as IStateInternal;
             if (subState != null)
             {
+                subState.OnStateCompleteEvent += ContinueExecution;
+
                 if (subState.IsCompositeState())
                 {
                     Execute(subState.CurrentState);
                 }
-                subState.OnStateCompleteEvent += ContinueExecution;
+                else if (pseudoState is IDoInternal doSubState && doSubState.HasActivity())
+                {
+                    doSubState.Do();
+                }
             }
-
-            if (pseudoState is IDoInternal doSubState && doSubState.HasActivity())
+            else
             {
-                doSubState.Do();
-                return;
+                ContinueExecution();
             }
-
-            ContinueExecution();
 
             void ContinueExecution()
             {

@@ -8,9 +8,9 @@ namespace Packages.HFSM.Runtime.Impl.States
     {
         public event Action OnStateCompleteEvent;
 
-        public IPseudoStateInternal CurrentState { get; private set; }
+        public IPseudoStateInternal CurrentState { get; set; }
 
-        private StateMachineTemplate _nestedState;
+        private IStateMachineTemplateInternal _nestedState;
 
         internal State(string name, int id) : base(new HashSet<EnterDelegate>(3), new HashSet<ExitDelegate>(3),
             new HashSet<ITransitionInternal>(3))
@@ -36,8 +36,17 @@ namespace Packages.HFSM.Runtime.Impl.States
             {
                 throw new Exception($"State {Name} already has a nested state.");
             }
-            _nestedState = new StateMachineTemplate(Name);
+            if (doActivity != null)
+            {
+                throw new Exception($"Nested states ('{Name}') may not have do activities.");
+            }
+
+            _nestedState = new StateMachineTemplate(this, Name);
             stateMachineSetup(_nestedState);
+            if (_nestedState.Final == null)
+            {
+                throw new Exception($"Nested states ('{Name}') must have a final state.");
+            }
             CurrentState = (IPseudoStateInternal)_nestedState.Initial;
         }
 
@@ -51,7 +60,6 @@ namespace Packages.HFSM.Runtime.Impl.States
             return _nestedState != null;
         }
 
-
         public void Abort()
         {
             doActivity?.Abort();
@@ -63,6 +71,11 @@ namespace Packages.HFSM.Runtime.Impl.States
             if (doActivity != null)
             {
                 throw new Exception($"State {Name} already has a Do activity");
+            }
+
+            if (_nestedState != null)
+            {
+                throw new Exception($"Nested states ('{Name}') may not have Do activities.");
             }
 
             doActivity = new DoActivity(MarkStateAsDone);
@@ -81,7 +94,7 @@ namespace Packages.HFSM.Runtime.Impl.States
             return true;
         }
 
-        private void MarkStateAsDone()
+        public void MarkStateAsDone()
         {
             isDone = true;
             OnStateCompleteEvent?.Invoke();

@@ -11,7 +11,7 @@ public class DemoStateMachine : MonoBehaviour
 
     private void Awake()
     {
-        _sm = StateMachineFactory.Create("Test");
+        _sm = StateMachineFactory.Create();
 
         IState state = _sm.CreateState("FooState");
         IState triggerState = _sm.CreateState("TriggerState");

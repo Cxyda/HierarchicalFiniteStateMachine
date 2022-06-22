@@ -10,6 +10,7 @@ namespace Packages.HFSM.Runtime.Interfaces
         void Abort();
         bool IsDone();
         bool IsCompositeState();
+        void MarkStateAsDone();
     }
     public interface IState : IPseudoState, IEnter, IDo, IExit
     {
