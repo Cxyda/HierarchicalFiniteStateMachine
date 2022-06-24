@@ -14,6 +14,7 @@ namespace Packages.HFSM.Runtime.Interfaces
     public interface ITransition
     {
         ITransition If(ConditionDelegate conditionDelegateDelegate);
+        void Else(IEnter target);
         ITransition On(IStateMachineEvent @event);
     }
 }
