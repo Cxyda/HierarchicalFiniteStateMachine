@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
+using Packages.HFSM.Runtime.Impl.Data;
+using Packages.HFSM.Runtime.Impl.Utils;
 using Packages.HFSM.Runtime.Interfaces;
 
 namespace Packages.HFSM.Runtime.Impl.States
@@ -16,11 +19,13 @@ namespace Packages.HFSM.Runtime.Impl.States
 
         protected IDoActivity doActivity;
         protected readonly HashSet<ITransitionInternal> transitions;
+        protected readonly ILogger logger;
 
         public IEnumerable<ITransitionInternal> Transitions => transitions;
 
-        protected PseudoState(HashSet<EnterDelegate> onEnterDelegates, HashSet<ExitDelegate> onExitDelegates, HashSet<ITransitionInternal> transitions)
+        protected PseudoState(HashSet<EnterDelegate> onEnterDelegates, HashSet<ExitDelegate> onExitDelegates, HashSet<ITransitionInternal> transitions, [NotNull]ILogger logger)
         {
+            this.logger = logger;
             this.onEnterDelegates = onEnterDelegates;
             this.onExitDelegates = onExitDelegates;
             this.transitions = transitions;
@@ -67,6 +72,7 @@ namespace Packages.HFSM.Runtime.Impl.States
             {
                 if (transition.Trigger.Equals(@event))
                 {
+                    logger.Log(LogLevel.Verbose, $"--> {Name} --> Triggering event '{@event.Name}'");
                     transition.Trigger.Invoke();
                     return true;
                 }

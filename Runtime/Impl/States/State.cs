@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Packages.HFSM.Runtime.Impl.Utils;
 using Packages.HFSM.Runtime.Interfaces;
 
 namespace Packages.HFSM.Runtime.Impl.States
@@ -12,8 +13,8 @@ namespace Packages.HFSM.Runtime.Impl.States
 
         private IStateMachineTemplateInternal _nestedState;
 
-        internal State(string name, int id) : base(new HashSet<EnterDelegate>(3), new HashSet<ExitDelegate>(3),
-            new HashSet<ITransitionInternal>(3))
+        internal State(string name, int id, ILogger logger) : base(new HashSet<EnterDelegate>(3), new HashSet<ExitDelegate>(3),
+            new HashSet<ITransitionInternal>(3), logger)
         {
             Id = id;
             Name = name;
@@ -41,7 +42,7 @@ namespace Packages.HFSM.Runtime.Impl.States
                 throw new Exception($"Nested states ('{Name}') may not have do activities.");
             }
 
-            _nestedState = new StateMachineTemplate(this, Name);
+            _nestedState = new StateMachineTemplate(this, Name, logger);
             stateMachineSetup(_nestedState);
             if (_nestedState.Final == null)
             {

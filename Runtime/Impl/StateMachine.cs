@@ -1,6 +1,9 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
+using Packages.HFSM.Runtime.Impl.Data;
+using Packages.HFSM.Runtime.Impl.Utils;
 using Packages.HFSM.Runtime.Interfaces;
-using UnityEngine;
+using ILogger = UnityEngine.ILogger;
 
 namespace Packages.HFSM.Runtime.Impl
 {
@@ -12,14 +15,27 @@ namespace Packages.HFSM.Runtime.Impl
         private readonly string _name;
         private readonly IStateMachineTemplateInternal _template;
 
+        public LogLevel LogLevel
+        {
+            get => _logger.logLevel;
+            set => _logger.logLevel = value;
+        }
+        [NotNull]private readonly UnityLogger _logger;
+
         private StateMachine()
         {
         }
 
-        public StateMachine(string stateMachineName)
+        public StateMachine(string stateMachineName, ILogger logger = null)
         {
             _name = stateMachineName;
-            _template = new StateMachineTemplate(null, stateMachineName);
+            if (logger == null)
+            {
+                _logger = new UnityLogger(LogLevel.Error, _name);
+            }
+
+            _template = new StateMachineTemplate(null, stateMachineName, _logger ?? throw new InvalidOperationException());
+            _logger.Log(LogLevel.Verbose, "Initialized.");
         }
 
         public void Start()
@@ -28,6 +44,7 @@ namespace Packages.HFSM.Runtime.Impl
             {
                 throw new Exception("StateMachine is already running.");
             }
+            _logger.Log(LogLevel.Verbose, "Started.");
 
             _isRunning = true;
             _currentState = (IPseudoStateInternal)_template.Initial;
@@ -44,12 +61,16 @@ namespace Packages.HFSM.Runtime.Impl
                     state.Abort();
                 }
             }
+            _logger.Log(LogLevel.Log, $"Stopped.");
         }
 
         private void Execute(IPseudoStateInternal pseudoState)
         {
+            _logger.Log(LogLevel.Log, $"--> Executing '{pseudoState.Name}'...");
+
             if (pseudoState is IEnterInternal enterSubState)
             {
+                _logger.Log(LogLevel.Info, $"--> Entering '{pseudoState.Name}'...");
                 enterSubState.Enter();
             }
 
@@ -60,10 +81,12 @@ namespace Packages.HFSM.Runtime.Impl
 
                 if (subState.IsCompositeState())
                 {
+                    _logger.Log(LogLevel.Info, $"--> Entering nested state '{subState.CurrentState}' of '{pseudoState.Name}'...");
                     Execute(subState.CurrentState);
                 }
                 else if (pseudoState is IDoInternal doSubState && doSubState.HasActivity())
                 {
+                    _logger.Log(LogLevel.Info, $"--> DoActivity of '{pseudoState.Name}'...");
                     doSubState.Do();
                 }
             }
@@ -90,6 +113,7 @@ namespace Packages.HFSM.Runtime.Impl
                 }
                 if (pseudoState is IExitInternal exitSubState)
                 {
+                    _logger.Log(LogLevel.Info, $"--> Exiting '{pseudoState.Name}'...");
                     exitSubState.Exit();
                 }
 
@@ -105,18 +129,23 @@ namespace Packages.HFSM.Runtime.Impl
             foreach (var transition in state.Transitions)
             {
                 var isTrue = transition.Evaluate();
+                IPseudoStateInternal target = null;
                 if (!isTrue)
                 {
                     if (transition.AlternativeTarget != null)
                     {
-                        return (IPseudoStateInternal)transition.AlternativeTarget;
+                        target = (IPseudoStateInternal)transition.AlternativeTarget;
+                        _logger.Log(LogLevel.Verbose, $"--> {state.Name} --> Else Transition condition to '{target.Name}' evaluated TRUE");
+                        return target;
                     }
                     continue;
                 }
 
-                return (IPseudoStateInternal)transition.Target;
+                target = (IPseudoStateInternal)transition.Target;
+                _logger.Log(LogLevel.Verbose, $"--> {state.Name} --> Transition condition to '{target.Name}' evaluated TRUE");
+                return target;
             }
-
+            _logger.Log(LogLevel.Verbose, $"--> {state.Name} has no outgoing transitions. Waiting for events....");
             return null;
         }
 
@@ -126,7 +155,7 @@ namespace Packages.HFSM.Runtime.Impl
 
             if (!hasTrigger)
             {
-                Debug.LogWarning($"State {_currentState.Name} does not have a trigger for {@event.Name}");
+                _logger.Log(LogLevel.Warning, $"--> State {_currentState.Name} does not have a trigger for {@event.Name}");
             }
         }
 
