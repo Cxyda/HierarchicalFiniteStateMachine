@@ -70,7 +70,7 @@ namespace Packages.HFSM.Runtime.Impl.States
         {
             foreach (var transition in transitions)
             {
-                if (transition.Trigger.Equals(@event))
+                if (transition.Trigger != null && transition.Trigger.Equals(@event))
                 {
                     logger.Log(LogLevel.Verbose, $"--> {Name} --> Triggering event '{@event.Name}'");
                     transition.Trigger.Invoke();

@@ -83,17 +83,17 @@ namespace Packages.HFSM.Runtime.Impl
                 {
                     _logger.Log(LogLevel.Info, $"--> Entering nested state '{subState.CurrentState}' of '{pseudoState.Name}'...");
                     Execute(subState.CurrentState);
+                    return;
                 }
-                else if (pseudoState is IDoInternal doSubState && doSubState.HasActivity())
+                if (pseudoState is IDoInternal doSubState && doSubState.HasActivity())
                 {
                     _logger.Log(LogLevel.Info, $"--> DoActivity of '{pseudoState.Name}'...");
                     doSubState.Do();
+                    return;
                 }
+
             }
-            else
-            {
-                ContinueExecution();
-            }
+            ContinueExecution();
 
             void ContinueExecution()
             {
@@ -164,7 +164,7 @@ namespace Packages.HFSM.Runtime.Impl
             return _template.CreateState(stateName);
         }
 
-        public IFinal CreateFinal(string stateName = "Exit")
+        public IFinal CreateFinal(string stateName = "Final")
         {
             return _template.CreateFinal(stateName);
         }

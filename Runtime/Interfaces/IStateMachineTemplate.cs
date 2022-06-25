@@ -8,7 +8,7 @@ namespace Packages.HFSM.Runtime.Interfaces
 
     public interface IStateMachineTemplate
     {
-        IState CreateState(string stateName = "");
-        IFinal CreateFinal(string stateName = "");
+        IState CreateState(string stateName = "State");
+        IFinal CreateFinal(string stateName = "Final");
     }
 }

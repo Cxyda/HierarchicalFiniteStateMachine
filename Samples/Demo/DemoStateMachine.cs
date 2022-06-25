@@ -1,4 +1,5 @@
 using Packages.HFSM.Runtime.Impl;
+using Packages.HFSM.Runtime.Impl.Data;
 using Packages.HFSM.Runtime.Interfaces;
 using UnityEngine;
 
@@ -12,13 +13,13 @@ public class DemoStateMachine : MonoBehaviour
     private void Awake()
     {
         _sm = StateMachineFactory.Create();
+        _sm.LogLevel = LogLevel.Verbose;
 
         IState state = _sm.CreateState("FooState");
         IState triggerState = _sm.CreateState("TriggerState");
         IFinal finalState = _sm.CreateFinal();
 
         state.OnEnter(StateEnter);
-        state.OnDo(DoSomething);
         state.Nest(SetupNestedState);
         state.TransitionTo(triggerState).If(IsTrue);
         state.OnExit(StateExit);
@@ -32,21 +33,20 @@ public class DemoStateMachine : MonoBehaviour
     private void SetupNestedState(IStateMachineTemplate template)
     {
         var nestedState = template.CreateState("NestedState");
+        var finalState = template.CreateFinal("Final");
         
         nestedState.OnEnter(NestedEntry);
         nestedState.OnDo(NestedDo);
+        nestedState.TransitionTo(finalState);
     }
 
     private void NestedDo(IDoActivity doActivity)
     {
-        Debug.Log("Nested Do");
         doActivity.Complete();
-        Debug.Log("Nested Do complete");
     }
 
     private void NestedEntry()
     {
-        Debug.Log("NesterEntry");
     }
 
     private void Update()
@@ -62,17 +62,14 @@ public class DemoStateMachine : MonoBehaviour
     }
     private void DoSomething(IDoActivity doActivity)
     {
-        Debug.Log("Do Activity");
         _doActivity = doActivity;
     }
 
     private void StateEnter()
     {
-        Debug.Log("State Enter");
     }
     private void StateExit()
     {
-        Debug.Log("State Exit");
     }
     private bool IsTrue()
     {

@@ -24,7 +24,12 @@ namespace Packages.HFSM.Runtime.Impl.Utils
                 return;
             }
 
-            var logMessage = $"{_prefix} :: {message}\n[{string.Join(";", args)}]";
+            var argsString = string.Join(";", args);
+            var logMessage = $"{_prefix} :: {message}";
+            if (!string.IsNullOrEmpty(argsString))
+            {
+                logMessage += $"\n[{argsString}]";
+            }
             switch (logType)
             {
                 case LogLevel.Error:
