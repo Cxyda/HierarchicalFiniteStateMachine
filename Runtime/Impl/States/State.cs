@@ -12,14 +12,16 @@ namespace Packages.HFSM.Runtime.Impl.States
         public IStateMachine StateMachine { get; private set; }
 
         private IStateMachineTemplateInternal _nestedState;
+        private IStateInternal _parentState;
 
-        internal State(IStateMachine stateMachine, string name, int id, ILogger logger) : base(new HashSet<EnterDelegate>(3), new HashSet<ExitDelegate>(3),
+        internal State(IStateMachine stateMachine, IStateInternal parentState, string name, int id, ILogger logger) : base(new HashSet<EnterDelegate>(3), new HashSet<ExitDelegate>(3),
             new HashSet<ITransitionInternal>(3), logger)
         {
             StateMachine = stateMachine;
             Id = id;
             Name = name;
             CurrentState = null;
+            _parentState = parentState;
         }
 
         public void OnEnter(EnterDelegate enterDelegate)
@@ -87,9 +89,15 @@ namespace Packages.HFSM.Runtime.Impl.States
         public override bool Trigger(IStateMachineEvent @event)
         {
             var hasTrigger = base.Trigger(@event);
+
             if (!hasTrigger)
             {
-                return false;
+                if (_parentState == null)
+                {
+                    return false;
+                }
+
+                return _parentState.Trigger(@event);
             }
 
             MarkStateAsDone();

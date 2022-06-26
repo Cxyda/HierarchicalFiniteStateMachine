@@ -33,7 +33,7 @@ namespace Packages.HFSM.Runtime.Impl
 
         public IState CreateState(string stateName = "State")
         {
-            var newState = StateFactory.CreateState(_stateMachine, $"{_templateName}_{stateName}", _logger);
+            var newState = StateFactory.CreateState(_stateMachine, _parentState, $"{_templateName}_{stateName}", _logger);
             if (_states.Count == 0) ;
             {
                 _initial.TransitionTo(newState);
