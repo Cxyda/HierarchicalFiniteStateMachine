@@ -18,19 +18,22 @@ namespace Packages.HFSM.Runtime.Impl
         private readonly HashSet<IPseudoStateInternal> _states;
         private readonly IStateInternal _parentState;
         private readonly ILogger _logger;
+        private readonly IStateMachine _stateMachine;
 
-        internal StateMachineTemplate(IStateInternal parentState, string templateName, [NotNull]ILogger logger)
+        internal StateMachineTemplate(IStateMachine stateMachine, IStateInternal parentState, string templateName, [NotNull]ILogger logger)
         {
             _logger = logger;
             _parentState = parentState;
             _templateName = templateName;
+            _stateMachine = stateMachine;
+
             _states = new HashSet<IPseudoStateInternal>(3);
             _initial = StateFactory.CreateInitial($"{_templateName}_Initial", _logger);
         }
 
         public IState CreateState(string stateName = "State")
         {
-            var newState = StateFactory.CreateState($"{_templateName}_{stateName}", _logger);
+            var newState = StateFactory.CreateState(_stateMachine, $"{_templateName}_{stateName}", _logger);
             if (_states.Count == 0) ;
             {
                 _initial.TransitionTo(newState);

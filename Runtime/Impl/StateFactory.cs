@@ -11,12 +11,12 @@ namespace Packages.HFSM.Runtime.Impl
 
         internal static IInitialInternal CreateInitial(string name, [NotNull]ILogger logger)
         {
-            return new Initial(name, ++_stateCounter, logger);
+            return new Initial( name, ++_stateCounter, logger);
         }
 
-        internal static IStateInternal CreateState(string name, [NotNull]ILogger logger)
+        internal static IStateInternal CreateState(IStateMachine stateMachine, string name, [NotNull]ILogger logger)
         {
-            return new State(name, ++_stateCounter, logger);
+            return new State(stateMachine, name, ++_stateCounter, logger);
         }
 
         internal static IFinalInternal CreateFinal(string name, [NotNull]ILogger logger)

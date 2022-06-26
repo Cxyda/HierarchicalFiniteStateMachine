@@ -34,7 +34,7 @@ namespace Packages.HFSM.Runtime.Impl
                 _logger = new UnityLogger(LogLevel.Error, _name);
             }
 
-            _template = new StateMachineTemplate(null, stateMachineName, _logger ?? throw new InvalidOperationException());
+            _template = new StateMachineTemplate(this, null, stateMachineName, _logger ?? throw new InvalidOperationException());
             _logger.Log(LogLevel.Verbose, "Initialized.");
         }
 

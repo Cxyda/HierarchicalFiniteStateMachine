@@ -8,14 +8,15 @@ namespace Packages.HFSM.Runtime.Impl.States
     public class State : PseudoState, IStateInternal
     {
         public event Action OnStateCompleteEvent;
-
         public IPseudoStateInternal CurrentState { get; set; }
+        public IStateMachine StateMachine { get; private set; }
 
         private IStateMachineTemplateInternal _nestedState;
 
-        internal State(string name, int id, ILogger logger) : base(new HashSet<EnterDelegate>(3), new HashSet<ExitDelegate>(3),
+        internal State(IStateMachine stateMachine, string name, int id, ILogger logger) : base(new HashSet<EnterDelegate>(3), new HashSet<ExitDelegate>(3),
             new HashSet<ITransitionInternal>(3), logger)
         {
+            StateMachine = stateMachine;
             Id = id;
             Name = name;
             CurrentState = null;
@@ -42,7 +43,7 @@ namespace Packages.HFSM.Runtime.Impl.States
                 throw new Exception($"Nested states ('{Name}') may not have do activities.");
             }
 
-            _nestedState = new StateMachineTemplate(this, Name, logger);
+            _nestedState = new StateMachineTemplate(StateMachine, this, Name, logger);
             stateMachineSetup(_nestedState);
             if (_nestedState.Final == null)
             {
