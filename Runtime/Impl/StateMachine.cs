@@ -15,11 +15,14 @@ namespace Packages.HFSM.Runtime.Impl
         private readonly string _name;
         private readonly IStateMachineTemplateInternal _template;
 
+
         public LogLevel LogLevel
         {
             get => _logger.logLevel;
             set => _logger.logLevel = value;
         }
+        public bool IsRunning => _isRunning;
+
         [NotNull]private readonly UnityLogger _logger;
 
         private StateMachine()
@@ -109,6 +112,11 @@ namespace Packages.HFSM.Runtime.Impl
                     if (!subState.IsDone())
                     {
                         throw new Exception($"Something went wrong. State {pseudoState.Name} is not done but transitions are about to be evaluated.");
+                    }
+
+                    if (subState.IsCompositeState())
+                    {
+                        ((IStateInternal)_currentState)?.Abort();
                     }
                 }
                 if (pseudoState is IExitInternal exitSubState)

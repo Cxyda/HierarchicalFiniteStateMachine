@@ -8,11 +8,11 @@ namespace Packages.HFSM.Runtime.Impl.States
     public class State : PseudoState, IStateInternal
     {
         public event Action OnStateCompleteEvent;
-        public IPseudoStateInternal CurrentState { get; set; }
+        public IPseudoStateInternal CurrentState { get; private set; }
         public IStateMachine StateMachine { get; private set; }
 
         private IStateMachineTemplateInternal _nestedState;
-        private IStateInternal _parentState;
+        private readonly IStateInternal _parentState;
 
         internal State(IStateMachine stateMachine, IStateInternal parentState, string name, int id, ILogger logger) : base(new HashSet<EnterDelegate>(3), new HashSet<ExitDelegate>(3),
             new HashSet<ITransitionInternal>(3), logger)

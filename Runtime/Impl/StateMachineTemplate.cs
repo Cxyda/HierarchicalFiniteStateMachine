@@ -58,8 +58,8 @@ namespace Packages.HFSM.Runtime.Impl
             
             void MarkParentStateAsDone()
             {
-                _logger?.Log(LogLevel.Verbose, $"Final State '{stateName}' reached. Marking '{_parentState.Name}' as done.");
-                _parentState.MarkStateAsDone();
+                _logger?.Log(LogLevel.Verbose, $"Final State '{stateName}' reached. Marking '{_parentState?.Name}' as done.");
+                _parentState?.MarkStateAsDone();
             }
         }
     }
