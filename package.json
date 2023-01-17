@@ -2,7 +2,7 @@
 	"name": "de.oma-tools.hfsm",
 	"displayName": "OMA-Tools Hierarchical Finite StateMachine",
 	"description": "A Hierarchical Finite State Machine (HFSM) implementation",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"unity": "2021.3",
 	"license": "GPL-3.0",
 	"repository": {
