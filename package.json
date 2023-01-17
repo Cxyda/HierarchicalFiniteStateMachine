@@ -15,10 +15,11 @@
 		"email" : "cxyda@tuta.io",
 		"url" : "https://github.com/Cxyda"
 	},
-	"samples": {
-	   "displayName": "HFSM Demo",
-	   "description": "A very simple demo of how to use this package",
-	   "path": "Samples~/Demo"
-	}
-
+	"samples": [
+		{
+			"displayName": "HFSM Demo",
+			"description": "A very simple demo of how to use this package",
+			"path": "Samples~/Demo"
+		}
+	]
 }
